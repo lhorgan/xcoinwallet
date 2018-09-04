@@ -16,4 +16,6 @@ def balance(request):
 
 def send(request):
     print(request.POST)
+    compiled_code = get_compiled_code()
+    send_xcoins(compiled_code, request.POST["address"], request.POST["amount"], request.user)
     return HttpResponse("Hooray!")

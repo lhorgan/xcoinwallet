@@ -10,7 +10,7 @@ rpcuser = "ckrpc"
 rpcpassword = "jxjQ9TgRqIyIlatz7a1TNjEJ2TNQ46M8K9WFEM9VXFQ="
 #walletpassword = "distance"
 #walletaccount = "nifty"
-fee = 20000
+fee = 700000
 #publicKey = "BLD6fw7+X/a2BBwYBEUOpwjNaSmpnnv9Jpj59iv4f7TIAQLOFR40Zg4Kh0fnoXRXqhYQGePJDSnWgaMl8uV8uCQ="
 
 def request(method, params):
@@ -40,7 +40,7 @@ def get_xcoins(compiled_code, user):
     utxos = request("listunspentoutputs", {"password": user.profile.wallet_password, "account": user.profile.wallet_account})["result"]["outputs"]
     xcoins = []
     for utxo in utxos:
-        print(utxo)
+        #print(utxo)
         if utxo["data"]["contract"] == compiled_code:
             xcoins.append(utxo)
     
@@ -49,47 +49,53 @@ def get_xcoins(compiled_code, user):
 def send_xcoins(compiled_code, address, amount, user):
     xcoins = get_xcoins(compiled_code, user)
     total = 0
+    amount = int(amount)
     toSpends = []
+    realValue = 0
+
     for coin in xcoins:
         if total < amount:
+            realValue += coin["value"]
             total += coin["data"]["value"]
             toSpends.append(coin)
         else:
             break
     
+    #print("REAL VALUE: " + str(realValue))
+    #if realValue < fee:   
+
     if total >= amount:
         inputs = []
         for toSpend in toSpends:
             input = {"outputId": toSpend["id"]} # does this work?
             inputs.append(input)
-    
+
         toThem = {
-            "value": 50000,
+            "value": (realValue / 2) - fee,
             "nonce": random.randint(1, 64000),
             "data": {"publicKey": address, "value": amount, "contract": compiled_code},
         }
         change = {
-            "value": 50000,
+            "value": (realValue / 2) - fee,
             "nonce": random.randint(1, 64000),
             "data": {"publicKey": user.profile.public_key, "value": total - amount, "contract": compiled_code}
         }
 
         transaction = {
-            "inputs": [inputs], 
+            "inputs": inputs, 
             "outputs": [toThem, change], 
             "timestamp": int(time.time()),
         }
 
-        print(json.dumps(transaction, sort_keys=True, indent=4))
+        #print(json.dumps(transaction, sort_keys=True, indent=4))
 
-        signed = request("signtransaction", {"transaction": transaction, "password": user.profile.wallet_password})["result"]
+        signed = request("signtransaction", {"transaction": transaction, "password": "distance"})["result"]
 
         # broadcast the transaction on the network
         success = request("sendrawtransaction", {"transaction": signed})["result"]
         return success
     else:
         return (False, "Not enough value")
-
 
 def tally_value(compiled_code, user):
     xcoins = get_xcoins(compiled_code, user)
