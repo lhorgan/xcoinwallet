@@ -1,6 +1,7 @@
 <html>
     <head>
         {% load static %}
+        <script src="{% static "wallet/jquery.js" %}"></script>
         <script src="{% static "wallet/wallet.js" %}"></script>
     </head>
 
@@ -9,12 +10,16 @@
             Hello {{ user.username }}
         </div>
         <div>
-            Balance:
+            Balance: X<span id="xcoin-balance"></span>
         </div>
         <div>
             <input type="text" placeholder="Address" />
             <input type="number" placeholder="Amount" />
             <span>Send!</span>
         </div>
+
+        <script>
+            queryBalance();
+        </script>
     </body>
 </html>

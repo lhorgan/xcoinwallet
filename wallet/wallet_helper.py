@@ -37,7 +37,7 @@ def get_compiled_code():
     return compiled_code
 
 def get_xcoins(compiled_code, user):
-    utxos = request("listunspentoutputs", {"password": user.wallet_password, "account": user.wallet_account})["result"]["outputs"]
+    utxos = request("listunspentoutputs", {"password": user.profile.wallet_password, "account": user.profile.wallet_account})["result"]["outputs"]
     xcoins = []
     for utxo in utxos:
         print(utxo)
@@ -71,7 +71,7 @@ def send_xcoins(compiled_code, address, amount, user):
         change = {
             "value": 50000,
             "nonce": random.randint(1, 64000),
-            "data": {"publicKey": user.public_key, "value": total - amount, "contract": compiled_code}
+            "data": {"publicKey": user.profile.public_key, "value": total - amount, "contract": compiled_code}
         }
 
         transaction = {
@@ -82,7 +82,7 @@ def send_xcoins(compiled_code, address, amount, user):
 
         print(json.dumps(transaction, sort_keys=True, indent=4))
 
-        signed = request("signtransaction", {"transaction": transaction, "password": user.wallet_password})["result"]
+        signed = request("signtransaction", {"transaction": transaction, "password": user.profile.wallet_password})["result"]
 
         # broadcast the transaction on the network
         success = request("sendrawtransaction", {"transaction": signed})["result"]
