@@ -1,0 +1,20 @@
+<html>
+    <head>
+        {% load static %}
+        <script src="{% static "wallet/wallet.js" %}"></script>
+    </head>
+
+    <body>
+        <div>
+            Hello {{ user.username }}
+        </div>
+        <div>
+            Balance:
+        </div>
+        <div>
+            <input type="text" placeholder="Address" />
+            <input type="number" placeholder="Amount" />
+            <span>Send!</span>
+        </div>
+    </body>
+</html>
