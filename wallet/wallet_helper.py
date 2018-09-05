@@ -10,7 +10,7 @@ rpcuser = "ckrpc"
 rpcpassword = "jxjQ9TgRqIyIlatz7a1TNjEJ2TNQ46M8K9WFEM9VXFQ="
 #walletpassword = "distance"
 #walletaccount = "nifty"
-fee = 700000
+fee = 300000
 #publicKey = "BLD6fw7+X/a2BBwYBEUOpwjNaSmpnnv9Jpj59iv4f7TIAQLOFR40Zg4Kh0fnoXRXqhYQGePJDSnWgaMl8uV8uCQ="
 
 def request(method, params):
@@ -61,7 +61,7 @@ def send_xcoins(compiled_code, address, amount, user):
         else:
             break
     
-    #print("REAL VALUE: " + str(realValue))
+    print("REAL VALUE: " + str(realValue))
     #if realValue < fee:   
 
     if total >= amount:
